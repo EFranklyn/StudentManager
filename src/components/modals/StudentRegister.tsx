@@ -1,0 +1,222 @@
+import React, { useEffect, useRef, useState } from 'react';
+import SmartInput from '../smartInput/SmartInput';
+import { StudentModel } from '../../models/student.model';
+import { validate } from 'class-validator';
+import SearchableSelect from '../searchableInput/SearchableInput';
+import useCourseOptions from '../../services/useCourseOptions';
+import useLocationOptions from '../../services/useLocationOtions';
+import { ChoiceModel } from '../../models/choice.model';
+import SocialMediaForm from '../socialMediaSelect/SocialMediaSelect';
+import { extractErrors } from '../../utils/extractErrors';
+import { plainToClass } from 'class-transformer';
+import PhotoManager from '../photoManager/PhotoManager';
+import { SocialMediaModel } from '../../models/socialMedial.model';
+
+interface StudentRegisterProps {
+  data?: StudentModel;
+  onConfirm: (data: StudentModel) => void;
+  handleClose?: () => void;
+}
+
+const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, handleClose  }) => {
+  const courseOptiosService = useCourseOptions()
+  const locationService = useLocationOptions()
+  
+  const studentRef = useRef<StudentModel>(new StudentModel());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [errors, setErrors]:any = useState({})
+  const [, setRenderTrigger] = useState(false);
+  const [courses, setCourses] = useState([{}]);
+
+  const [courseOptions, setCourseOptions] = useState([{label: '', value: ''}]);
+  const [stateOptions, setStateOptions] = useState([{label: '', value: ''}]);
+  const [cityOptions, setCityOptions] = useState([{label: '', value: ''}]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const options =  await courseOptiosService.getCourseOptions()
+        setCourses(options ??[])
+        const _courseOptions = (options ?? []).map((course) => {
+          return {
+            label: course.course,
+            value: course.courseId 
+          }
+        })
+        
+        setCourseOptions(_courseOptions)  
+        const states = await locationService.getStateOptions()   
+        setStateOptions(states)   
+      } catch (error) {
+        console.error("Erro ao buscar opções:", error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const ValidateStudent = async() => {
+    const studentData = plainToClass(StudentModel, studentRef.current);
+    const validationErrors = await validate(studentData)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _errors: any = extractErrors(validationErrors)
+
+      setErrors(_errors)
+    }
+  
+
+  const handleConfirm = () => {
+    ValidateStudent()
+    onConfirm(studentRef.current);
+    handleClose()
+  };
+
+  const handleDate = (e: React.ChangeEvent<HTMLInputElement>) =>{
+    const _birthDate  = e.target.value
+    studentRef.current.birthDate = _birthDate
+    setRenderTrigger((prev) => !prev);
+  }
+
+  const handleCourse = (course: ChoiceModel | null) => {
+    studentRef.current.course = course
+    setRenderTrigger((prev) => !prev);
+  }
+
+  const handleState = async (state:ChoiceModel | null) => {
+    if(!state){
+      setCityOptions([{label: '', value: ''}])      
+      handleCity(null)
+      setRenderTrigger((prev) => !prev);
+    }
+    studentRef.current.state = state
+    setRenderTrigger((prev) => !prev);
+    if(state){
+      const cities = await locationService.getCity(state.value!)
+      setCityOptions(cities)
+    }
+  }
+
+  const handleCity = (city: ChoiceModel | null) => {
+    studentRef.current.city = city
+    setRenderTrigger((prev) => !prev);
+  }
+
+  const handleSocialMedia = (event: SocialMediaModel[]) =>{
+    studentRef.current.socialMedias = event
+    setRenderTrigger((prev) => !prev);
+  }
+
+  const handleImage = (photo:string)=>{
+    studentRef.current.photo = photo
+    setRenderTrigger((prev) => !prev);
+  }
+
+  return (
+    <div className='container card m-0 p-4'>
+      <div className="container  d-flex justify-content-end p-2  mt-1 mb--5">
+        <button
+          type="button"
+          className=" btn rounded-circle btn-close "
+          onClick={handleClose}/>
+      </div>
+      
+      <div className='container  d-flex justify-content-center p-0'><h4>Cadastrar Estudante</h4></div>
+      <div className='container  d-flex justify-content-center p-1  mt-1 mb--5'>
+        <PhotoManager 
+          onChange={(e)=>(handleImage(e))}
+          photoUrl={studentRef.current.photo}
+          error={errors['photo']}
+          />
+        </div>
+      <div className='row'>
+        <div className='col-4'>
+            <SmartInput 
+                value={studentRef.current.fullName ?? ''} 
+                onChange={(value) => studentRef.current.fullName = value}
+                autoComplete="name" 
+                placeholder="Digite seu Nome Completo"
+                label="Nome Completo*"
+                error={errors['fullName']}
+            />        
+        </div> 
+        <div className='col-4'>
+            <SmartInput 
+                value={studentRef.current.email ?? ''} 
+                onChange={(value) => studentRef.current.email = value}
+                inputMode="email" 
+                autoComplete="email" 
+                placeholder="Digite seu email"
+                label="E-mail*"
+                error={errors['email']}
+            />
+        </div>
+        <div className='col-4'>
+            <div className="mb-1">
+                <span  className="form-control-label fs-6 fw-bold text-secondary">
+                Data de nascimento*
+                </span>
+                <input
+                    type="date"
+                    id="birthdate"
+                    value={studentRef.current.birthDate ?? ''}
+                    onChange={(e) => (handleDate(e))}
+                    className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}
+                />
+                {errors['birthDate'] && <small className="text-danger">{errors['birthDate']}</small>}
+            </div>
+        </div>
+        <div className='col-4'>
+            <SmartInput 
+                value={studentRef.current.school ?? ''} 
+                onChange={(value) => studentRef.current.school = value}
+                autoComplete="off" 
+                placeholder="Digite sua Instituição de Ensino"
+                label="Instituição de Ensino*"
+                error={errors['school']}
+            />
+        </div>
+        <div className='col-8'>
+          <SearchableSelect 
+            label="Curso*"            
+            options={courseOptions} 
+            value={studentRef.current.course?.value ?? ''} 
+            onChange={(e) => ( handleCourse(e) )} 
+            error={errors['course']}
+          />
+        </div>
+        <div className='col-4'>
+          <SearchableSelect 
+            label="Estado*"            
+            options={stateOptions} 
+            value={studentRef.current.state?.value ?? ''} 
+            onChange={(e) => ( handleState(e) )} 
+            error={errors['state']}
+            
+          />
+        </div>
+        <div className='col-4'>
+          <SearchableSelect 
+            label="Cidade*"            
+            options={cityOptions} 
+            value={studentRef.current.city?.value ?? ''} 
+            onChange={(e) => ( handleCity(e) )} 
+            error={errors['city']}
+            
+          />
+        </div>
+        <div className='col-12'>
+          <SocialMediaForm
+          value={studentRef.current?.socialMedias} 
+          onChange={(e) => ( handleSocialMedia(e) )} 
+          errors={errors}
+          />          
+        </div>
+      
+      <button className='btn btn-primary mt-4' onClick={handleConfirm}>Save</button>
+    </div>
+    </div>
+  );
+};
+
+export default StudentRegister;
+
