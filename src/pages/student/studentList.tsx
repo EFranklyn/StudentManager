@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useRef } from "react";
 import StudentCard from "../../components/student/studentCard";
+import { StudentModel } from "../../models/student.model";
+import useCustomModal from "../../hooks/useCustomModal";
+import StudentRegister from "../../components/modals/StudentRegister";
+import { plainToInstance } from "class-transformer";
 
-
-const mockStudents = [
-  { name: "Ana Souza", birthDate: "15/06/2000", state: "SP", city: "São Paulo", email: "ana@email.com" },
-  { name: "Carlos Oliveira", birthDate: "22/09/1998", state: "RJ", city: "Rio de Janeiro", email: "carlos@email.com" },
-  { name: "Fernanda Lima", birthDate: "10/12/2001", state: "MG", city: "Belo Horizonte", email: "fernanda@email.com" },
-  { name: "Fernanda Lima", birthDate: "10/12/2001", state: "MG", city: "Belo Horizonte", email: "fernanda@email.com" },
-  { name: "Fernanda Lima", birthDate: "10/12/2001", state: "MG", city: "Belo Horizonte", email: "fernanda@email.com" },
-];
 
 const StudentList: React.FC = () => {
+  
+  const { openCustomModal } = useCustomModal();
+  const studentRef = useRef<StudentModel[]>([]);
+
+
+  const setStudent = (student:unknown) => {
+    const updatedData = plainToInstance(StudentModel, student)
+    if(updatedData)
+    studentRef.current.push(updatedData)
+  }
+
+  const openEditUserModal = async () => {
+    const newStudent = new StudentModel()
+    await openCustomModal({
+      component: StudentRegister,
+      componentProps: { data: newStudent, 
+        onConfirm: (updatedData) => {
+          setStudent(updatedData);
+        },
+      },
+    });
+  };
+
   return (
     <div className="container mt-4">
       <h2>Lista de Estudantes</h2>
+      <button className="btn btn-primary" onClick={openEditUserModal} data-bs-toggle="modal" data-bs-target="#exampleModal">
+        cadastrar estudante 
+      </button>
       <div className="row">
-        {mockStudents.map((student, index) => (
+        {studentRef.current.map((student, index) => (
           <div className="col-md-4" key={index}>
             <StudentCard {...student} />
           </div>
