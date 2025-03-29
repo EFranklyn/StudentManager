@@ -21,18 +21,19 @@ interface StudentRegisterProps {
 const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, handleClose  }) => {
   const courseOptiosService = useCourseOptions()
   const locationService = useLocationOptions()
-  
-  const studentRef = useRef<StudentModel>(new StudentModel());
+  const studentRef = useRef<StudentModel>(data ?? new StudentModel());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [errors, setErrors]:any = useState({})
   const [, setRenderTrigger] = useState(false);
   const [courses, setCourses] = useState([{}]);
+  const [isLoading, setIsLoading] = useState(false); 
 
   const [courseOptions, setCourseOptions] = useState([{label: '', value: ''}]);
   const [stateOptions, setStateOptions] = useState([{label: '', value: ''}]);
   const [cityOptions, setCityOptions] = useState([{label: '', value: ''}]);
 
   useEffect(() => {
+
     const fetchOptions = async () => {
       try {
         const options =  await courseOptiosService.getCourseOptions()
@@ -55,21 +56,36 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
     fetchOptions();
   }, []);
 
-  const ValidateStudent = async() => {
+  const ValidateStudent = async(): Promise<boolean> => {
     const studentData = plainToClass(StudentModel, studentRef.current);
     const validationErrors = await validate(studentData)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const _errors: any = extractErrors(validationErrors)
+    const _errors: any = extractErrors(validationErrors)   
 
-      setErrors(_errors)
+    setErrors(_errors)
+
+    return Object.keys(_errors).length === 0
     }
   
 
-  const handleConfirm = () => {
-    ValidateStudent()
-    onConfirm(studentRef.current);
-    handleClose()
-  };
+    const handleConfirm = async () => {
+      const isValid = await ValidateStudent();
+      if (!isValid) {
+        console.log(Object.keys(errors));
+        return;
+      }
+  
+      setIsLoading(true); // ✅ Iniciar loading
+      try {
+        await onConfirm(studentRef.current);
+        setIsLoading(false); // ✅ Encerrar loading
+        handleClose && handleClose();
+      } catch (error) {
+        console.error('error', error);
+        setIsLoading(false); // ✅ Encerrar loading em caso de erro
+      }
+    };
+  
 
   const handleDate = (e: React.ChangeEvent<HTMLInputElement>) =>{
     const _birthDate  = e.target.value
@@ -212,7 +228,9 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
           />          
         </div>
       
-      <button className='btn btn-primary mt-4' onClick={handleConfirm}>Save</button>
+      <button className='btn btn-primary mt-4' onClick={handleConfirm}>
+      {isLoading ? "Salvando..." : "Salvar"}
+        </button>
     </div>
     </div>
   );

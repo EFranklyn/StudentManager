@@ -18,7 +18,7 @@ const useLocationOptions = () => {
                 if(state)
                 return {
                     label: state.sigla + ' - ' + state.nome,
-                    value: state.id,
+                    value: String(state.id),
                 }
             });
 
@@ -37,7 +37,7 @@ const useLocationOptions = () => {
                 if(city)
                 return {
                     label: city.nome,
-                    value: city.id,
+                    value: String(city.id),
                 }
             });
 

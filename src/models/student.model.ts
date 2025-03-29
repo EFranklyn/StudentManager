@@ -10,7 +10,8 @@ import {
     Validate,
     IsNotEmpty,
     ValidatorConstraint,
-    ArrayMinSize
+    ArrayMinSize,
+    IsOptional
   } from "class-validator";
 import { Type } from "class-transformer";
 import {  SocialMediaModel } from "./socialMedial.model";
@@ -48,7 +49,9 @@ class AgeValidation {
   }
 }
   export class StudentModel {
-
+    @IsString()
+    @IsOptional()
+    uuid: string | null = null;
 
     @IsString()
     @MinLength(3, { message: "O nome deve conter pelo menos 3 caracteres." })
