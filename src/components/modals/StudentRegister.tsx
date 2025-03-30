@@ -13,14 +13,15 @@ import PhotoManager from '../photoManager/PhotoManager';
 import { SocialMediaModel } from '../../models/socialMedial.model';
 import useStudentApi from '../../services/useStudent';
 import RocketLoader from '../loadings/rocketLoading/RocketLoading';
+import useSweetAlert from '../../hooks/useSweetAlert';
 
-interface StudentRegisterProps {
+interface StudentFormProps {
   data?: StudentModel;
   onConfirm: (data: StudentModel) => Promise<void>;
   handleClose?: () => void;
 }
 
-const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, handleClose  }) => {
+const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose  }) => {
   const courseOptiosService = useCourseOptions();
   const locationService = useLocationOptions();
   const studentApi = useStudentApi();
@@ -32,6 +33,8 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
   const [courseOptions, setCourseOptions] = useState([{label: '', value: ''}]);
   const [stateOptions, setStateOptions] = useState([{label: '', value: ''}]);
   const [cityOptions, setCityOptions] = useState([{label: '', value: ''}]);
+  const [isEdit, setIsEdit] = useState(false)
+  const { showToast } = useSweetAlert();
 
   useEffect(() => {
     const updateStudent = async()=>{
@@ -40,6 +43,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         if(_student){
           setStudent(_student)
           handleState(_student.state)
+          setIsEdit(true)
         }        
       }      
     }
@@ -85,14 +89,17 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         return;
       }
   
-      setIsLoading(true); // ✅ Iniciar loading
+      setIsLoading(true);
+      const finishMessage = `${student.fullName} Foi ${isEdit ? 'Editado.': 'Criado'}`
       try {
         await onConfirm(student);
-        setIsLoading(false); // ✅ Encerrar loading
+        setIsLoading(false);
+        
+        showToast(finishMessage, 'success')
         handleClose!();
       } catch (error) {
         console.error('error', error);
-        setIsLoading(false); // ✅ Encerrar loading em caso de erro
+        setIsLoading(false);
       }
     };
   
@@ -155,14 +162,14 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
       loading={isLoading}
       message="Salvando"
       />
-      <div className="container  d-flex justify-content-end p-2  mt-1 mb--5">
+      <div className="container  d-flex justify-content-between p-0  m-0">
+      <h4>{isEdit ? 'Editar ': 'Cadastrar '} Estudante</h4>
         <button
           type="button"
           className=" btn rounded-circle btn-close "
           onClick={handleClose}/>
       </div>
       
-      <div className='container  d-flex justify-content-center p-0'><h4>Cadastrar Estudante</h4></div>
       <div className='container  d-flex justify-content-center p-1  mt-1 mb--5'>
         <PhotoManager 
           onChange={(e)=>(handleImage(e))}
@@ -271,5 +278,5 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
   );
 };
 
-export default StudentRegister;
+export default StudentForm;
 

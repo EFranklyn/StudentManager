@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import StudentCard from "../../components/student/studentCard";
 import { StudentModel } from "../../models/student.model";
 import useCustomModal from "../../hooks/useCustomModal";
-import StudentRegister from "../../components/modals/StudentRegister";
+import StudentForm from "../../components/modals/StudentRegister";
 import { plainToInstance } from "class-transformer";
 import useStudentApi from "../../services/useStudent";
+import useSweetAlert from "../../hooks/useSweetAlert";
 
 
 const StudentList: React.FC = () => {
@@ -14,6 +15,7 @@ const StudentList: React.FC = () => {
     const studentRef = useRef<StudentModel[]>([]);
     const studentApi = useStudentApi()
     const [students, setStudents] = useState<StudentModel[]>([]);
+    const { showAlert, showToast } = useSweetAlert();
     
     
   const setStudent = (student:unknown) => {
@@ -40,6 +42,16 @@ const StudentList: React.FC = () => {
   const createStudent = async(student:StudentModel)=>{
     const newStudent = plainToInstance(StudentModel, student)
     await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
+    await studentApi.createStudent(newStudent)
 
   }
 
@@ -53,7 +65,7 @@ const StudentList: React.FC = () => {
   const openCreateStudent = async () => {
     const newStudent = new StudentModel()
     await openCustomModal({
-      component: StudentRegister,
+      component: StudentForm,
       componentProps: { data: newStudent, 
           onConfirm: createStudent
         
@@ -61,15 +73,22 @@ const StudentList: React.FC = () => {
     });
   };
 
+  
   const deleteStudent = async (student:StudentModel) =>{
-    await studentApi.deleteStudent(student)
-    getStudents()
+    const constinue =  await showAlert(`Tem certeza que deseja deletar o estudante ${student.fullName} ?`, 
+      'warning').then((confirmed) => {return confirmed})
+    if(constinue){
+      await studentApi.deleteStudent(student)
+      getStudents()
+      showToast('O estudante foi deletado', 'success')
+    }
+    
   }
 
   const editCreateStudent = async (student: StudentModel) => {
     const data = plainToInstance(StudentModel, student);  
     await openCustomModal({
-      component: StudentRegister,
+      component: StudentForm,
       componentProps: {
         data,
         onConfirm: editStudent,
