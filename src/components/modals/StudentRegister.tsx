@@ -38,10 +38,8 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         const _student = await studentApi.getStudent(data.uuid)
         if(_student){
           setStudent(_student)
-          setStudent(_student)
           handleState(_student.state)
-        }
-        
+        }        
       }      
     }
 
