@@ -8,23 +8,11 @@ import useStudentApi from "../../services/useStudent";
 import useSweetAlert from "../../hooks/useSweetAlert";
 
 
-const StudentList: React.FC = () => {
-
-    
+const StudentList: React.FC = () => {    
     const { openCustomModal } = useCustomModal();
-    const studentRef = useRef<StudentModel[]>([]);
     const studentApi = useStudentApi()
     const [students, setStudents] = useState<StudentModel[]>([]);
     const { showAlert, showToast } = useSweetAlert();
-    
-    
-  const setStudent = (student:unknown) => {
-    const updatedData = plainToInstance(StudentModel, student)
-    if(updatedData)
-    studentRef.current.push(updatedData)
-
-    // studentApi.sendPhoto(updatedData.photo!)
-  }
 
   const getStudents = async () => {
     try {
@@ -42,17 +30,6 @@ const StudentList: React.FC = () => {
   const createStudent = async(student:StudentModel)=>{
     const newStudent = plainToInstance(StudentModel, student)
     await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-    await studentApi.createStudent(newStudent)
-
   }
 
   const editStudent = async(student:StudentModel)=>{
@@ -67,8 +44,7 @@ const StudentList: React.FC = () => {
     await openCustomModal({
       component: StudentForm,
       componentProps: { data: newStudent, 
-          onConfirm: createStudent
-        
+          onConfirm: createStudent        
       },
     });
   };
@@ -98,13 +74,16 @@ const StudentList: React.FC = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Lista de Estudantes</h2>
+      <div className="container  d-flex justify-content-end p-0  ml-5 pe-5">
       <button className="btn btn-primary" onClick={openCreateStudent} data-bs-toggle="modal" data-bs-target="#exampleModal">
         cadastrar estudante 
       </button>
+      </div>
+      <h2 className="mb-3">Lista de Estudantes</h2>
       <div className="row">
-        {students.map((student, index) => (
+        {students.map((student) => (
             <StudentCard 
+            key={student.id}
             student={student}
             onEdit={()=>editCreateStudent(student)}
             onDelete={()=>deleteStudent(student)} />
