@@ -5,8 +5,19 @@ type AlertType = 'success' | 'error' | 'warning' | 'info';
 
 
 const useSweetAlert = () => {
-  const [result, setResult] = useState<boolean | null>(null); 
-  
+  const [result, setResult] = useState<boolean | null>(null);
+  const isDarkTheme = () => {
+    return document.documentElement.getAttribute('data-bs-theme') === 'dark';
+  };
+
+  const getBackgroundColor = () => {
+    return isDarkTheme() ? '#343a40' : '#ffffff';
+  };
+
+  const getTextColor = () => {
+    return isDarkTheme() ? '#f8f9fa' : '#212529';
+  };
+
   const showAlert = async (message: string, type: AlertType = 'info') => {
     const swalResult = await Swal.fire({
       title: 'Atenção!',
@@ -16,9 +27,11 @@ const useSweetAlert = () => {
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
       reverseButtons: true,
+      background: getBackgroundColor(),
+      color: getTextColor(),
       customClass: {
         confirmButton: 'btn btn-primary fw-bold', 
-        cancelButton: 'btn btn-secondary fw-bold',
+        cancelButton: 'btn btn-danger text-white fw-bold',
         actions: 'd-flex col-8 justify-content-between'
       }
     });
@@ -26,6 +39,7 @@ const useSweetAlert = () => {
     setResult(swalResult.isConfirmed);
     return swalResult.isConfirmed;
   };
+
 
   const showToast = (message: string, type: AlertType = 'info') => {
     Swal.fire({
