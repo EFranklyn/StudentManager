@@ -269,10 +269,13 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
           errors={errors}
           />          
         </div>
-      
-      <button className='btn btn-primary mt-4' onClick={handleConfirm}>
-      {isLoading ? "Salvando..." : "Salvar"}
+        <div className="container  d-flex justify-content-end p-0  ml-5 pe-5">
+        <button className='btn btn-primary btn-lg mt-4' onClick={handleConfirm}>
+        {isEdit ? "Editar" : "Criar"}
         </button>
+
+        </div>
+      
     </div>
     </div>
   );
