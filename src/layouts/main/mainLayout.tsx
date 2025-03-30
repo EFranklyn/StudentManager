@@ -1,10 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import NavbarComponent from "../../components/navBar/Navbar";
 
 const MainLayout: React.FC = () => {
   return (
     <div>
-      <h1>Meu App</h1>
+      <NavbarComponent/>
       <Outlet />
     </div>
   );
