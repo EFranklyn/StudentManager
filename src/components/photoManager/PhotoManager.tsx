@@ -18,6 +18,7 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onCh
   const [showModal, setShowModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const cropperRef = useRef<ReactCropperElement>(null);
+  const [validateError, setValidateError] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -31,6 +32,11 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onCh
     const file = event.target.files?.[0];
     
     if (file) {
+      if (file.size > 7 * 1024 * 1024) {
+        setValidateError("O tamanho da foto não pode exceder 10MB.");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result as string);
@@ -40,18 +46,39 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onCh
       event.target.value = "";
     }
   };
-
+  
   const handleCrop = async () => {
     const cropper = cropperRef.current?.cropper;
-      if(!cropper) return
+    if (!cropper) return;
 
-    const cropImage = cropper.getCroppedCanvas().toDataURL()
-    setPreview(cropImage);
-    if (onChange) {
-        onChange(cropImage);
+    const canvas = cropper.getCroppedCanvas({
+      maxWidth: 1024,
+      maxHeight: 1024
+    });
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+
+      if (blob.size > 1 * 1024 * 1024) {
+        const quality = Math.min(0.7, 1 * 1024 * 1024 / blob.size);
+        canvas.toBlob((compressedBlob) => {
+          if (!compressedBlob) return;
+          if (compressedBlob.size > 10 * 1024 * 1024) {
+            setValidateError("Imagem muito grande após corte e compressão. Tente reduzir ainda mais.");
+            return;
+          }
+          const croppedImageUrl = URL.createObjectURL(compressedBlob);
+          setPreview(croppedImageUrl);
+          onChange?.(croppedImageUrl);
+          setShowModal(false);
+        }, "image/jpeg", quality);
+      } else {
+        const croppedImageUrl = URL.createObjectURL(blob);
+        setPreview(croppedImageUrl);
+        onChange?.(croppedImageUrl);
+        setShowModal(false);
       }
-    setShowModal(false);
-
+    }, "image/jpeg", 0.7);
   };
 
 
@@ -67,7 +94,7 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onCh
         <div className="rounded-circle mb-2" style={{ width: "50px", height: "50px", background: "#eee" }}></div>
       )}
 
-      {error && <small className="text-danger font-small">{error}</small>}
+      {(error || validateError) && <small className="text-danger font-small">{error || validateError}</small>}
 
       <button onClick={handleClick} className="btn btn-outline-primary btn-sm mb-2">
         {preview ? "Trocar Foto" : "Adicionar Foto"}
@@ -75,6 +102,7 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onCh
 
       <input
         type="file"
+        accept="image/*"
         ref={inputRef}
         onChange={handleFileChange}
         className={`form-control ${error ? 'is-invalid' : ''}`}
