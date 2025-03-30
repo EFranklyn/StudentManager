@@ -12,6 +12,7 @@ import { plainToClass } from 'class-transformer';
 import PhotoManager from '../photoManager/PhotoManager';
 import { SocialMediaModel } from '../../models/socialMedial.model';
 import useStudentApi from '../../services/useStudent';
+import RocketLoader from '../loadings/rocketLoading/RocketLoading';
 
 interface StudentRegisterProps {
   data?: StudentModel;
@@ -150,6 +151,10 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
 
   return (
     <div className='container card m-0 p-4'>
+      <RocketLoader 
+      loading={isLoading}
+      message="Salvando"
+      />
       <div className="container  d-flex justify-content-end p-2  mt-1 mb--5">
         <button
           type="button"
