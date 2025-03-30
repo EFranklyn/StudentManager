@@ -77,7 +77,8 @@ const StudentCard: React.FC<StudentCardProps> = ({
             onClick={() => onEdit()}>
               <i className="bi bi-pencil-fill"></i>
             </button>
-            <button className="btn btn-sm btn-danger m-1">
+            <button className="btn btn-sm btn-danger m-1"
+            onClick={()=>onDelete()}>
               <i className="bi bi-trash-fill"></i>
             </button>
           </div>
@@ -87,7 +88,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
             <div className="flex-shrink-0">
               <div className="d-flex flex-column justify-content-center align-items-center">
                 <img
-                  src={`https://res.cloudinary.com/student-test/image/upload/v1743256895/${student.uuid}.png`}
+                  src={student.photo!}
                   alt="Generic placeholder image"
                   className="img-fluid rounded-circle p-2"
                   style={{

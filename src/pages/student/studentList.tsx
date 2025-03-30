@@ -13,7 +13,6 @@ const StudentList: React.FC = () => {
     const { openCustomModal } = useCustomModal();
     const studentRef = useRef<StudentModel[]>([]);
     const studentApi = useStudentApi()
-    const [, setRenderTrigger] = useState(false);
     const [students, setStudents] = useState<StudentModel[]>([]);
     
     
@@ -44,6 +43,13 @@ const StudentList: React.FC = () => {
 
   }
 
+  const editStudent = async(student:StudentModel)=>{
+    const newStudent = plainToInstance(StudentModel, student)
+    await studentApi.updateStudent(newStudent)
+    getStudents()
+
+  }
+
   const openCreateStudent = async () => {
     const newStudent = new StudentModel()
     await openCustomModal({
@@ -55,13 +61,18 @@ const StudentList: React.FC = () => {
     });
   };
 
+  const deleteStudent = async (student:StudentModel) =>{
+    await studentApi.deleteStudent(student)
+    getStudents()
+  }
+
   const editCreateStudent = async (student: StudentModel) => {
     const data = plainToInstance(StudentModel, student);  
     await openCustomModal({
       component: StudentRegister,
       componentProps: {
         data,
-        onConfirm: createStudent,
+        onConfirm: editStudent,
       },      
     });
   };
@@ -76,7 +87,8 @@ const StudentList: React.FC = () => {
         {students.map((student, index) => (
             <StudentCard 
             student={student}
-            onEdit={()=>editCreateStudent(student)} />
+            onEdit={()=>editCreateStudent(student)}
+            onDelete={()=>deleteStudent(student)} />
         ))}
       </div>
     </div>

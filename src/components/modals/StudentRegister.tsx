@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SmartInput from '../smartInput/SmartInput';
 import { StudentModel } from '../../models/student.model';
 import { validate } from 'class-validator';
@@ -11,21 +11,21 @@ import { extractErrors } from '../../utils/extractErrors';
 import { plainToClass } from 'class-transformer';
 import PhotoManager from '../photoManager/PhotoManager';
 import { SocialMediaModel } from '../../models/socialMedial.model';
+import useStudentApi from '../../services/useStudent';
 
 interface StudentRegisterProps {
   data?: StudentModel;
-  onConfirm: (data: StudentModel) => void;
+  onConfirm: (data: StudentModel) => Promise<void>;
   handleClose?: () => void;
 }
 
 const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, handleClose  }) => {
-  const courseOptiosService = useCourseOptions()
-  const locationService = useLocationOptions()
-  const studentRef = useRef<StudentModel>(data ?? new StudentModel());
+  const courseOptiosService = useCourseOptions();
+  const locationService = useLocationOptions();
+  const studentApi = useStudentApi();
+  const [student, setStudent] = useState<StudentModel>(new StudentModel());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [errors, setErrors]:any = useState({})
-  const [, setRenderTrigger] = useState(false);
-  const [courses, setCourses] = useState([{}]);
+  const [errors, setErrors]:any = useState({});
   const [isLoading, setIsLoading] = useState(false); 
 
   const [courseOptions, setCourseOptions] = useState([{label: '', value: ''}]);
@@ -33,11 +33,22 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
   const [cityOptions, setCityOptions] = useState([{label: '', value: ''}]);
 
   useEffect(() => {
+    const updateStudent = async()=>{
+      if(data && data.uuid){
+        const _student = await studentApi.getStudent(data.uuid)
+        if(_student){
+          setStudent(_student)
+          setStudent(_student)
+          handleState(_student.state)
+        }
+        
+      }      
+    }
 
+    
     const fetchOptions = async () => {
       try {
         const options =  await courseOptiosService.getCourseOptions()
-        setCourses(options ??[])
         const _courseOptions = (options ?? []).map((course) => {
           return {
             label: course.course,
@@ -52,12 +63,12 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         console.error("Erro ao buscar opções:", error);
       }
     };
-
+    updateStudent();
     fetchOptions();
   }, []);
 
   const ValidateStudent = async(): Promise<boolean> => {
-    const studentData = plainToClass(StudentModel, studentRef.current);
+    const studentData = plainToClass(StudentModel, student);
     const validationErrors = await validate(studentData)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const _errors: any = extractErrors(validationErrors)   
@@ -77,9 +88,9 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
   
       setIsLoading(true); // ✅ Iniciar loading
       try {
-        await onConfirm(studentRef.current);
+        await onConfirm(student);
         setIsLoading(false); // ✅ Encerrar loading
-        handleClose && handleClose();
+        handleClose!();
       } catch (error) {
         console.error('error', error);
         setIsLoading(false); // ✅ Encerrar loading em caso de erro
@@ -89,23 +100,29 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
 
   const handleDate = (e: React.ChangeEvent<HTMLInputElement>) =>{
     const _birthDate  = e.target.value
-    studentRef.current.birthDate = _birthDate
-    setRenderTrigger((prev) => !prev);
+    setStudent((prev) => ({
+      ...prev,
+      birthDate: _birthDate
+    }));
   }
 
   const handleCourse = (course: ChoiceModel | null) => {
-    studentRef.current.course = course
-    setRenderTrigger((prev) => !prev);
+    setStudent((prev) => ({
+      ...prev,
+      course: course
+    }));
   }
 
   const handleState = async (state:ChoiceModel | null) => {
     if(!state){
       setCityOptions([{label: '', value: ''}])      
       handleCity(null)
-      setRenderTrigger((prev) => !prev);
     }
-    studentRef.current.state = state
-    setRenderTrigger((prev) => !prev);
+    setStudent((prev) => ({
+      ...prev,
+      state: state
+    }));
+
     if(state){
       const cities = await locationService.getCity(state.value!)
       setCityOptions(cities)
@@ -113,18 +130,24 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
   }
 
   const handleCity = (city: ChoiceModel | null) => {
-    studentRef.current.city = city
-    setRenderTrigger((prev) => !prev);
+    setStudent((prev) => ({
+      ...prev,
+      city: city
+    }));
   }
 
-  const handleSocialMedia = (event: SocialMediaModel[]) =>{
-    studentRef.current.socialMedias = event
-    setRenderTrigger((prev) => !prev);
+  const handleSocialMedia = (socialMedias: SocialMediaModel[]) =>{
+    setStudent((prev) => ({
+      ...prev,
+      socialMedias: socialMedias
+    }));
   }
 
   const handleImage = (photo:string)=>{
-    studentRef.current.photo = photo
-    setRenderTrigger((prev) => !prev);
+    setStudent((prev) => ({
+      ...prev,
+      photo: photo
+    }));
   }
 
   return (
@@ -140,15 +163,18 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
       <div className='container  d-flex justify-content-center p-1  mt-1 mb--5'>
         <PhotoManager 
           onChange={(e)=>(handleImage(e))}
-          photoUrl={studentRef.current.photo}
+          photoUrl={student.photo}
           error={errors['photo']}
           />
         </div>
       <div className='row'>
         <div className='col-4'>
             <SmartInput 
-                value={studentRef.current.fullName ?? ''} 
-                onChange={(value) => studentRef.current.fullName = value}
+                value={student.fullName ?? ''} 
+                onChange={(value) => setStudent((prev) => ({
+                  ...prev,
+                  fullName: value
+                })) }
                 autoComplete="name" 
                 placeholder="Digite seu Nome Completo"
                 label="Nome Completo*"
@@ -157,8 +183,11 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         </div> 
         <div className='col-4'>
             <SmartInput 
-                value={studentRef.current.email ?? ''} 
-                onChange={(value) => studentRef.current.email = value}
+                value={student.email ?? ''} 
+                onChange={(value) => setStudent((prev) => ({
+                  ...prev,
+                  email: value
+                }))}
                 inputMode="email" 
                 autoComplete="email" 
                 placeholder="Digite seu email"
@@ -174,7 +203,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
                 <input
                     type="date"
                     id="birthdate"
-                    value={studentRef.current.birthDate ?? ''}
+                    value={student.birthDate ?? ''}
                     onChange={(e) => (handleDate(e))}
                     className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}
                 />
@@ -183,8 +212,11 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         </div>
         <div className='col-4'>
             <SmartInput 
-                value={studentRef.current.school ?? ''} 
-                onChange={(value) => studentRef.current.school = value}
+                value={student.school ?? ''} 
+                onChange={(value) => setStudent((prev) => ({
+                  ...prev,
+                  school: value
+                }))}
                 autoComplete="off" 
                 placeholder="Digite sua Instituição de Ensino"
                 label="Instituição de Ensino*"
@@ -195,7 +227,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
           <SearchableSelect 
             label="Curso*"            
             options={courseOptions} 
-            value={studentRef.current.course?.value ?? ''} 
+            value={student.course?.value ?? ''} 
             onChange={(e) => ( handleCourse(e) )} 
             error={errors['course']}
           />
@@ -204,7 +236,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
           <SearchableSelect 
             label="Estado*"            
             options={stateOptions} 
-            value={studentRef.current.state?.value ?? ''} 
+            value={student.state?.value ?? ''} 
             onChange={(e) => ( handleState(e) )} 
             error={errors['state']}
             
@@ -214,7 +246,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
           <SearchableSelect 
             label="Cidade*"            
             options={cityOptions} 
-            value={studentRef.current.city?.value ?? ''} 
+            value={student.city?.value ?? ''} 
             onChange={(e) => ( handleCity(e) )} 
             error={errors['city']}
             
@@ -222,7 +254,7 @@ const StudentRegister: React.FC<StudentRegisterProps> = ({ data, onConfirm, hand
         </div>
         <div className='col-12'>
           <SocialMediaForm
-          value={studentRef.current?.socialMedias} 
+          value={student.socialMedias} 
           onChange={(e) => ( handleSocialMedia(e) )} 
           errors={errors}
           />          

@@ -51,6 +51,10 @@ class AgeValidation {
   export class StudentModel {
     @IsString()
     @IsOptional()
+    id: string | null = null;
+
+    @IsString()
+    @IsOptional()
     uuid: string | null = null;
 
     @IsString()

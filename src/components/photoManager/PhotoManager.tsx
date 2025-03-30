@@ -12,7 +12,7 @@ interface PhotoManagerProps {
     onChange?: (newPhotoUrl: string) => void;
   }
 
-const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, onlyDisplay, onChange }) => {
+const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, uuid, onChange }) => {
   const [preview, setPreview] = useState<string | null>(photoUrl);
   const [image, setImage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -60,9 +60,9 @@ const PhotoManager: React.FC<PhotoManagerProps> = ({ photoUrl, error, onlyDispla
   };
 
   return (
-    <div className="photo-manager d-flex flex-column align-items-center">
+    <div className="photo-manager d-flex flex-column align-items-center">   
       {preview ? (
-        <img src={preview} alt="Preview" className="rounded-circle mb-1" style={{ width: "50px", height: "50px" }} />
+        <img src={preview} className="rounded-circle mb-1" style={{ width: "50px", height: "50px" }} />
       ) : (
         <div className="rounded-circle mb-2" style={{ width: "50px", height: "50px", background: "#eee" }}></div>
       )}

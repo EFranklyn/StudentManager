@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchableSelect from "../searchableInput/SearchableInput";
 import { ChoiceModel } from "../../models/choice.model";
 import SmartInput from "../smartInput/SmartInput";
@@ -14,12 +14,18 @@ interface SocialMediaFormProps {
   errors?: any
 }
 
-const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, errors }) => {
-  const [socialMedias, setSocialMedias] = useState<SocialMedia[]>(value || []);
+const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, errors }) => {  
+  const [socialMedias, setSocialMedias] = useState<SocialMedia[]>(value ?? []);
     const socialMediaOptions: ChoiceModel[] = [
         {label:'Facebook',value:'Facebook'},
-        {label:'Linkedin',value:'Linkedin'},
+        {label:'LinkedIn',value:'LinkedIn'},
     ] 
+
+    useEffect (() => {
+      if(value)
+      setSocialMedias(value)
+      }, [value]);
+
 
   const handleAdd = () => {
     const newMedia = [...socialMedias, { type: "", url: "" }]
