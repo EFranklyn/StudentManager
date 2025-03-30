@@ -1,54 +1,111 @@
-# React + TypeScript + Vite
+Student Manager
+Este projeto é uma aplicação de cadastro de estudantes do ensino superior construída com o framework React.js. A aplicação permite que os administradores cadastrem, editem, excluam e visualizem informações de estudantes, como dados pessoais, instituição de ensino, curso, cidade/estado, foto e redes sociais.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Funcionalidades
+Cadastro de Estudantes: Permite inserir dados como nome completo, e-mail, data de nascimento, instituição de ensino, curso, cidade/estado e foto.
 
-Currently, two official plugins are available:
+Edição de Estudantes: Permite a edição de qualquer informação cadastrada.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Exclusão de Estudantes: Permite excluir estudantes já cadastrados.
 
-## Expanding the ESLint configuration
+Validações: A aplicação inclui validações para garantir que os campos obrigatórios sejam preenchidos corretamente (como nome completo, e-mail e data de nascimento).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Integração com APIs:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+A lista de cursos é obtida a partir de uma API pública.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+A lista de cidades e estados é obtida de outra API pública.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Interface de Usuário: Utilização do React-Bootstrap para uma interface limpa e funcional.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Tecnologias Utilizadas
+React.js: Framework JavaScript para construir interfaces de usuário.
+
+TypeScript: Superset de JavaScript que adiciona tipagem estática e outros recursos.
+
+Axios: Biblioteca para fazer requisições HTTP e obter dados de APIs externas.
+
+React-Bootstrap: Componentes prontos para construção de interfaces modernas.
+
+SweetAlert2: Biblioteca para mostrar alertas e feedbacks de forma amigável ao usuário.
+
+React Router: Para navegação entre as diferentes páginas da aplicação.
+
+React-Cropper: Para cortar imagens antes de enviá-las.
+
+React Input Mask e React IMask: Para formatação de entradas, como e-mail, telefone e data de nascimento.
+
+Como Iniciar o Projeto
+Siga os passos abaixo para configurar e rodar a aplicação localmente.
+
+1. Clonando o repositório
+Primeiro, clone o repositório:
+
+bash
+Copiar
+Editar
+git clone https://github.com/seu-usuario/student-manager.git
+cd student-manager
+2. Instalando as dependências
+Instale as dependências do projeto com o npm ou yarn:
+
+bash
+Copiar
+Editar
+npm install
+# ou
+yarn install
+3. Rodando a aplicação
+Depois de instalar as dependências, inicie o servidor de desenvolvimento:
+
+bash
+Copiar
+Editar
+npm run dev
+# ou
+yarn dev
+A aplicação estará disponível em http://localhost:3000 no seu navegador.
+
+4. Ambiente de Produção
+Para gerar a versão de produção da aplicação, use o comando abaixo:
+
+bash
+Copiar
+Editar
+npm run build
+# ou
+yarn build
+5. Testando a Aplicação
+Você pode testar a aplicação com a seguinte configuração:
+
+bash
+Copiar
+Editar
+npm run preview
+# ou
+yarn preview
+6. Dependências de Desenvolvimento
+Vite: Ferramenta de build e bundling rápido para aplicações React.
+
+TypeScript: Para garantir a tipagem estática e um desenvolvimento mais robusto.
+
+ESLint: Para garantir a qualidade do código e manter o estilo consistente.
+
+Prettier: Para formatação de código automática.
+
+Como Contribuir
+Se você quiser contribuir para o projeto, siga os seguintes passos:
+
+Faça um fork deste repositório.
+
+Crie uma branch para sua feature (git checkout -b feature/nova-feature).
+
+Faça as alterações necessárias e commit as mudanças (git commit -am 'Adiciona nova feature').
+
+Envie para o repositório remoto (git push origin feature/nova-feature).
+
+Abra um pull request.
+
+Considerações Finais
+Este projeto foi desenvolvido como parte de uma avaliação prática e visa demonstrar as habilidades de integração de APIs externas, gerenciamento de estados, e a criação de interfaces amigáveis utilizando React e TypeScript.
+
