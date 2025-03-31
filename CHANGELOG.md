@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/EFranklyn/StudentManager/compare/v0.0.2...v0.0.3) (2025-03-31)
+
+
+### Bug Fixes
+
+* define-structure ([#4](https://github.com/EFranklyn/StudentManager/issues/4)) ([a41b593](https://github.com/EFranklyn/StudentManager/commit/a41b5932befd7d0f6cd069c4fc64eee6460082b4))
+
 ## [0.0.2](https://github.com/EFranklyn/StudentManager/compare/v0.0.1...v0.0.2) (2025-03-25)
 
 
