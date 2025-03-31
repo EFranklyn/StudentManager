@@ -68,7 +68,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
   };
 
   return (
-    <div className="col-12 col-lg-4 mb-4 checklist-item checklist-item-primary pb-4">
+    <div className="col-12 col-lg-4 mb-1  pb-4">
       <div className="card border shadow">
         <div className="p-2 pr-3 mb--5 bg-transparent d-flex justify-content-between align-items-center">
           <div className="dislpay-4 fw-bold ml--5 text-truncate"
