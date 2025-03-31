@@ -13,8 +13,8 @@ const NavbarComponent: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary px-4 py-3 p-5">
-      <a className="navbar-brand fw-bold text-primary" href="/">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary px-4 py-3 p-5 shadow-lg">
+      <a className="navbar-brand fw-bold text-secondary" href="/">
         StudentManager
       </a>
       <div className="d-flex ms-auto align-items-center gap-3">

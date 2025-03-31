@@ -33,6 +33,7 @@ const StudentForm: React.FC<StudentFormProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [errors, setErrors]: any = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   const [courseOptions, setCourseOptions] = useState([
     { label: "", value: "" },
@@ -41,7 +42,6 @@ const StudentForm: React.FC<StudentFormProps> = ({
   const [cityOptions, setCityOptions] = useState([{ label: "", value: "" }]);
   const [isEdit, setIsEdit] = useState(false);
   const { showToast } = useSweetAlert();
-
   useEffect(() => {
     const updateStudent = async () => {
       if (data && data.uuid) {
@@ -54,8 +54,9 @@ const StudentForm: React.FC<StudentFormProps> = ({
       }
     };
 
-    const fetchOptions = async () => {
+    const fetchOptionsCourses = async () => {
       try {
+        setIsLoading(true);
         const options = await courseOptiosService.getCourseOptions();
         const _courseOptions = (options ?? []).map((course) => {
           return {
@@ -63,17 +64,43 @@ const StudentForm: React.FC<StudentFormProps> = ({
             value: course.courseId,
           };
         });
-
         setCourseOptions(_courseOptions);
+      } catch (error) {
+        showToast(
+          "No momento a api de cursos esta indisponivel, tente novamente mais tarde",
+          "error"
+        );
+        handleClose!();
+        console.error("Erro ao buscar opções:", error);
+      }
+    };
+
+    const fetchStateOptions = async () => {
+      try {
         const states = await locationService.getStateOptions();
         setStateOptions(states);
       } catch (error) {
         console.error("Erro ao buscar opções:", error);
       }
     };
-    updateStudent();
-    fetchOptions();
-  },);
+
+    const loadData = async () => {
+      try {
+        setLoadingMessage("Carregando informações, aguarde...");
+        setIsLoading(true);
+
+        await updateStudent();
+        await fetchOptionsCourses();
+        await fetchStateOptions();
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const ValidateStudent = async (): Promise<boolean> => {
     const studentData = plainToClass(StudentModel, student);
@@ -92,7 +119,7 @@ const StudentForm: React.FC<StudentFormProps> = ({
       console.log(Object.keys(errors));
       return;
     }
-
+    setLoadingMessage("Salvando");
     setIsLoading(true);
     const finishMessage = `${student.fullName} Foi ${
       isEdit ? "Editado." : "Criado"
@@ -163,7 +190,9 @@ const StudentForm: React.FC<StudentFormProps> = ({
 
   return (
     <div className="container card m-0 p-4">
-      <RocketLoader loading={isLoading} message="Salvando" />
+      {isLoading && (
+        <RocketLoader loading={isLoading} message={loadingMessage} />
+      )}
       <div className="container  d-flex justify-content-between p-0  m-0">
         <h4>{isEdit ? "Editar " : "Cadastrar "} Estudante</h4>
         <button

@@ -42,16 +42,24 @@ const useSweetAlert = () => {
 
 
   const showToast = (message: string, type: AlertType = 'info') => {
+
+    const bgColor = {
+      'success': 'success',
+      'error': 'danger',
+      'warning': 'warning',
+      'info': 'info'
+    } 
+
     Swal.fire({
       toast: true,
       position: 'top',
       icon: type, 
       title: message, 
       showConfirmButton: false, 
-      timer: 3000, 
+      timer: 6000, 
       timerProgressBar: true,
       customClass: {
-        popup: `d-flex align-items-center bg-${type}`,
+        popup: `d-flex align-items-center bg-${bgColor[type]}`,
         title: `text-white me-2`,
       },
       didOpen: (toast) => {
