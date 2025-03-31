@@ -1,7 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/main/mainLayout";
 import studentRoutes from "./student";
+import ProjectIntroduction from "../pages/ProjectIntrodution";
 
 
 
@@ -10,7 +11,8 @@ const AppRoutes: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<div>Home</div>} />
+        <Route index element={<Navigate to="presentation" />} />
+        <Route path="presentation" element={<ProjectIntroduction />} />
           {studentRoutes}
         </Route>
       </Routes>
