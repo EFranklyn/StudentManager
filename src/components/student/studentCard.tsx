@@ -71,16 +71,23 @@ const StudentCard: React.FC<StudentCardProps> = ({
     <div className="col-12 col-lg-4 mb-1  pb-4">
       <div className="card border shadow">
         <div className="p-2 pr-3 mb--5 bg-transparent d-flex justify-content-between align-items-center">
-          <div className="dislpay-4 fw-bold ml--5 text-truncate"
-          style={{maxWidth: '250px'}}
-          >{student.fullName}</div>
+          <div
+            className="dislpay-4 fw-bold ml--5 text-truncate"
+            style={{ maxWidth: "250px" }}
+          >
+            {student.fullName}
+          </div>
           <div>
-            <button className="btn btn-sm btn-warning m-1"
-            onClick={() => onEdit()}>
+            <button
+              className="btn btn-sm btn-warning m-1"
+              onClick={() => onEdit()}
+            >
               <i className="bi bi-pencil-fill"></i>
             </button>
-            <button className="btn btn-sm btn-danger m-1"
-            onClick={()=>onDelete()}>
+            <button
+              className="btn btn-sm btn-danger m-1"
+              onClick={() => onDelete()}
+            >
               <i className="bi bi-trash-fill"></i>
             </button>
           </div>
@@ -116,7 +123,9 @@ const StudentCard: React.FC<StudentCardProps> = ({
             </div>
             <div className="flex-grow-1 ms-3">
               <p className="mb-2 pb-1 lead">{student.course!.label!}</p>
-              <div className="blockquote-footer pb-0 mb-0">{student.school}</div>
+              <div className="blockquote-footer pb-0 mb-0">
+                {student.school}
+              </div>
               <blockquote className="mt--3">
                 <small className="fw-normal">
                   {getAge(student.birthDate!)} anos,

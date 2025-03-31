@@ -10,7 +10,7 @@ interface SmartInputProps {
   autoComplete?: React.InputHTMLAttributes<HTMLInputElement>['autoComplete'];
   placeholder?: string;
   label?: string;
-  error?: string; // Mensagem de erro opcional
+  error?: string;
 }
 
 const SmartInput: React.FC<SmartInputProps> = ({
@@ -64,7 +64,6 @@ const SmartInput: React.FC<SmartInputProps> = ({
         />
       )}
 
-      {/* Exibe erro, se existir */}
       {error && <small className="text-danger">{error}</small>}
     </div>
   );

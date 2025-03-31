@@ -1,50 +1,66 @@
-import React from 'react';
-import Modal from 'react-modal';
-import useModal from '../../hooks/useModal';
+import React from "react";
+import Modal from "react-modal";
+import useModal from "../../hooks/useModal";
 
-
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const ModalWrapper: React.FC = () => {
-  const { modalState, closeModal } = useModal();
+  const { modalState, closeModal } = useModal() as {
+    modalState: {
+      component: React.ComponentType<{ handleClose?: () => void }>;
+      componentProps?: Record<string, unknown>;
+      closeFunctionCustom?: () => void;
+    };
+    closeModal: () => void;
+  };
 
   if (!modalState) return null;
 
-  const { component: Component, componentProps, closeFunctionCustom } = modalState;
+  const {
+    component: Component,
+    componentProps,
+    closeFunctionCustom,
+  }: {
+    component: React.ComponentType<{ handleClose?: () => void }>;
+    componentProps?: Record<string, unknown>;
+    closeFunctionCustom?: () => void;
+  } = modalState;
 
   const handleClose = () => {
     closeModal();
     if (closeFunctionCustom) closeFunctionCustom();
   };
-  
+
   return (
-    <Modal 
-      isOpen={true} 
-      onRequestClose={handleClose} 
+    <Modal
+      isOpen={true}
+      onRequestClose={handleClose}
       contentLabel="Modal"
       style={{
         overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.60)',
-          backdropFilter: 'blur(3px)', // Overlay escuro
-          overflow: 'hidden',
+          backgroundColor: "rgba(0, 0, 0, 0.60)",
+          backdropFilter: "blur(3px)",
+          overflow: "hidden",
         },
 
-          content: {
-            height: 'auto',
-            backgroundColor: 'transparent',
-            padding: '0',
-            border: 'none',
-          },
-          
-          
-      }}           
+        content: {
+          height: "auto",
+          backgroundColor: "transparent",
+          padding: "0",
+          border: "none",
+        },
+      }}
     >
-
-      <div className="d-flex justify-content-center align-items-center m-0 p-0"
-      style={{overflow: 'hidden',}}
+      <div
+        className="d-flex justify-content-center align-items-center m-0 p-0"
+        style={{ overflow: "hidden" }}
       >
         <div>
-        <Component {...(typeof componentProps === 'object' ? {...componentProps, handleClose } : {})} />
+          <Component
+            {...(typeof componentProps === "object"
+              ? { ...componentProps, handleClose }
+              : {})}
+          />
         </div>
       </div>
     </Modal>
@@ -52,5 +68,3 @@ const ModalWrapper: React.FC = () => {
 };
 
 export default ModalWrapper;
-
-

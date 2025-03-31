@@ -5,7 +5,7 @@ import NavbarComponent from "../../components/navBar/Navbar";
 const MainLayout: React.FC = () => {
   return (
     <div>
-      <NavbarComponent/>
+      <NavbarComponent />
       <Outlet />
     </div>
   );

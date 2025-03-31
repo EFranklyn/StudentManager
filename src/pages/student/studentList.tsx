@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import StudentCard from "../../components/student/studentCard";
 import { StudentModel } from "../../models/student.model";
 import useCustomModal from "../../hooks/useCustomModal";
@@ -17,7 +17,7 @@ const StudentList: React.FC = () => {
   const getStudents = async () => {
     try {
         const response = await studentApi.getStudents();
-        setStudents(response); // Atualiza diretamente o state
+        setStudents(response);
     } catch (error) {
         console.error("Erro ao buscar estudantes:", error);
     }
@@ -30,6 +30,7 @@ const StudentList: React.FC = () => {
   const createStudent = async(student:StudentModel)=>{
     const newStudent = plainToInstance(StudentModel, student)
     await studentApi.createStudent(newStudent)
+    getStudents()
   }
 
   const editStudent = async(student:StudentModel)=>{

@@ -1,10 +1,9 @@
-
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode } from "react";
 
 interface ModalProps<T> {
-  component: React.FC<T>; 
-  componentProps: T;      
-  confirmFunction?: (result: T) => void; 
+  component: React.FC<T>;
+  componentProps: T;
+  confirmFunction?: (result: T) => void;
   closeFunctionCustom?: () => void;
   handleClose: () => void;
 }
@@ -12,12 +11,14 @@ interface ModalProps<T> {
 interface ModalContextType {
   openModal: <T>(props: ModalProps<T>) => Promise<T | undefined>;
   closeModal: () => void;
-  modalState: ModalProps<unknown> | null; 
+  modalState: ModalProps<unknown> | null;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ModalProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [modalState, setModalState] = useState<ModalProps<any> | null>(null);
 
@@ -44,4 +45,4 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 };
 
 export default ModalContext;
-export type {ModalProps}
+export type { ModalProps };
