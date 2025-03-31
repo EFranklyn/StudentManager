@@ -25,7 +25,6 @@ const useStudentApi = () => {
         formData
       );
 
-      console.log("Imagem carregada com sucesso!", response.data.secure_url);
       return response.data.url;
     } catch (error) {
       console.error("Erro ao carregar imagem:", error);
@@ -62,7 +61,6 @@ const useStudentApi = () => {
       const photoResponse = await sendPhoto(newStudent.photo!, newStudent.uuid);
       newStudent.photo = photoResponse!;
       const response = await axios.post(apiUrl, newStudent);
-      console.log("Estudante criado com sucesso:", response.data);
 
       return response.data;
     } catch (error) {
@@ -74,7 +72,6 @@ const useStudentApi = () => {
   const updateStudent = async (
     updatedStudent: Partial<StudentModel>
   ): Promise<StudentModel | undefined> => {
-    console.log("tenho isso:", updatedStudent);
 
     let student = updatedStudent;
     try {
@@ -87,7 +84,6 @@ const useStudentApi = () => {
       }
 
       const response = await axios.put(apiUrl + `/${student.id}`, student);
-      console.log("Estudante atualizado com sucesso:", response.data);
       return response.data;
     } catch (error) {
       console.error("Erro ao atualizar estudante:", error);
@@ -100,7 +96,6 @@ const useStudentApi = () => {
   ): Promise<StudentModel | undefined> => {
     try {
       const response = await axios.delete(apiUrl + `/${delteStudent.id}`);
-      console.log("Estudante atualizado com sucesso:", response.data);
       return response.data;
     } catch (error) {
       console.error("Erro ao atualizar estudante:", error);

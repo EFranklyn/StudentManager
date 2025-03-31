@@ -116,7 +116,6 @@ const StudentForm: React.FC<StudentFormProps> = ({
   const handleConfirm = async () => {
     const isValid = await ValidateStudent();
     if (!isValid) {
-      console.log(Object.keys(errors));
       return;
     }
     setLoadingMessage("Salvando");
