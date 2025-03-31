@@ -10,16 +10,11 @@ const ModalWrapper: React.FC = () => {
 
   if (!modalState) return null;
 
-  const { component: Component, componentProps, confirmFunction, closeFunctionCustom } = modalState;
+  const { component: Component, componentProps, closeFunctionCustom } = modalState;
 
   const handleClose = () => {
     closeModal();
     if (closeFunctionCustom) closeFunctionCustom();
-  };
-
-  const handleConfirm = (result: unknown) => {
-    if (confirmFunction) confirmFunction(result);
-    closeModal();
   };
   
   return (
@@ -31,21 +26,24 @@ const ModalWrapper: React.FC = () => {
         overlay: {
           backgroundColor: 'rgba(0, 0, 0, 0.60)',
           backdropFilter: 'blur(3px)', // Overlay escuro
+          overflow: 'hidden',
         },
-        content: {
-          width: '100%', // Tamanho dinâmico com base no conteúdo
-          height:'auto',
-          margin: '0 auto', // Centralizando o conteúdo
-          backgroundColor: 'transparent', 
-          padding: '0',
-          border: 'none'
+
+          content: {
+            height: 'auto',
+            backgroundColor: 'transparent',
+            padding: '0',
+            border: 'none',
+          },
           
-        },
+          
       }}           
     >
 
-      <div className="">
-        <div className='container '>
+      <div className="d-flex justify-content-center align-items-center m-0 p-0"
+      style={{overflow: 'hidden',}}
+      >
+        <div>
         <Component {...(typeof componentProps === 'object' ? {...componentProps, handleClose } : {})} />
         </div>
       </div>

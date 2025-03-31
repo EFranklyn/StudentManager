@@ -54,11 +54,11 @@ const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, erro
   return (
     <div className="row ">
       <div className="row">
-        <div className="col-3">
+        <div className="col-6 col-lg-3">
             <blockquote className="mb-2 display-7 lead tw-bold">Redes Sociais</blockquote>
             {(errors && errors['socialMedias']) && <small className="text-danger">{errors['socialMedias']}</small>}       
         </div>
-        <div className="col-3">
+        <div className="col-6 col-lg-3">
             <button 
             disabled={socialMedias.length ==2}
             className="btn btn-outline-primary btn-sm" onClick={handleAdd}>Adicionar Rede Social</button>
@@ -66,7 +66,7 @@ const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, erro
       </div>  
       {socialMedias.map((social, index) => (
         <div key={index} className="row ">
-            <div className="col-3">
+            <div className="col-12 col-lg-3">
             <SearchableSelect
                 label="Rede Social*"            
                 options={socialMediaOptions} 
@@ -76,7 +76,7 @@ const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, erro
             
           />  
           </div>
-          <div className="col-5">
+          <div className="col-10 col-lg-5">
           <SmartInput
                 value={social.url ?? ''} 
                 onChange={(e) => handleChange(index, "url", e)}
@@ -88,7 +88,7 @@ const SocialMediaForm: React.FC<SocialMediaFormProps> = ({ value, onChange, erro
             />
             
           </div>
-          <div className="col-2 mt-4 pt-1 ">
+          <div className="col-2 col-lg-2 mt-4 pt-1 ">
             <button className="btn btn-close"          
           onClick={() => handleRemove(index)}/>
           </div>

@@ -178,7 +178,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
           />
         </div>
       <div className='row'>
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
             <SmartInput 
                 value={student.fullName ?? ''} 
                 onChange={(value) => setStudent((prev) => ({
@@ -191,7 +191,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
                 error={errors['fullName']}
             />        
         </div> 
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
             <SmartInput 
                 value={student.email ?? ''} 
                 onChange={(value) => setStudent((prev) => ({
@@ -205,7 +205,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
                 error={errors['email']}
             />
         </div>
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
             <div className="mb-1">
                 <span  className="form-control-label fs-6 fw-bold text-secondary">
                 Data de nascimento*
@@ -220,7 +220,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
                 {errors['birthDate'] && <small className="text-danger">{errors['birthDate']}</small>}
             </div>
         </div>
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
             <SmartInput 
                 value={student.school ?? ''} 
                 onChange={(value) => setStudent((prev) => ({
@@ -233,7 +233,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
                 error={errors['school']}
             />
         </div>
-        <div className='col-8'>
+        <div className='col-12 col-lg-8'>
           <SearchableSelect 
             label="Curso*"            
             options={courseOptions} 
@@ -242,7 +242,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
             error={errors['course']}
           />
         </div>
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
           <SearchableSelect 
             label="Estado*"            
             options={stateOptions} 
@@ -252,7 +252,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
             
           />
         </div>
-        <div className='col-4'>
+        <div className='col-12 col-lg-4'>
           <SearchableSelect 
             label="Cidade*"            
             options={cityOptions} 
@@ -262,7 +262,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onConfirm, handleClose 
             
           />
         </div>
-        <div className='col-12'>
+        <div className='col-12 col-lg-12'>
           <SocialMediaForm
           value={student.socialMedias} 
           onChange={(e) => ( handleSocialMedia(e) )} 

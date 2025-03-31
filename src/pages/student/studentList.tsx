@@ -75,8 +75,8 @@ const StudentList: React.FC = () => {
   return (
     <div className="container mt-4">
       <div className="container  d-flex justify-content-end p-0  ml-5 pe-5">
-      <button className="btn bg-primary" onClick={openCreateStudent} data-bs-toggle="modal" data-bs-target="#exampleModal">
-        cadastrar estudante 
+      <button className="btn btn-primary" onClick={openCreateStudent} data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Cadastrar Estudante 
       </button>
       </div>
       <h2 className="mb-3">Estudantes</h2>

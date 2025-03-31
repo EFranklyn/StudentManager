@@ -71,7 +71,9 @@ const StudentCard: React.FC<StudentCardProps> = ({
     <div className="col-12 col-lg-4 mb-4 checklist-item checklist-item-primary pb-4">
       <div className="card border shadow">
         <div className="p-2 pr-3 mb--5 bg-transparent d-flex justify-content-between align-items-center">
-          <div className="dislpay-4 fw-bold ml--5">{student.fullName}</div>
+          <div className="dislpay-4 fw-bold ml--5 text-truncate"
+          style={{maxWidth: '250px'}}
+          >{student.fullName}</div>
           <div>
             <button className="btn btn-sm btn-warning m-1"
             onClick={() => onEdit()}>
