@@ -79,7 +79,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
           </div>
           <div>
             <button
-              className="btn btn-sm btn-warning m-1"
+              className="btn btn-sm btn-success m-1"
               onClick={() => onEdit()}
             >
               <i className="bi bi-pencil-fill"></i>
